@@ -1,0 +1,10 @@
+===== XGBOOST CLASSIFIER =====
+Classification Accuracy: 1.0
+
+===== GRADIENT BOOSTING REGRESSOR =====
+Regression MSE: 1.9360129194454667e-10
+Regression Accuracy (after rounding): 1.0
+
+===== FINAL COMPARISON =====
+XGBoost Accuracy: 1.0
+Regression (Rounded) Accuracy: 1.0
