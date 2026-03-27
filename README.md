@@ -22,10 +22,10 @@ This project predicts intern performance based on task completion, consistency, 
 
 
 ## 📊 Results
-- XGBoost Accuracy: 0.92
-- Regression Accuracy: 0.85
 
-👉 XGBoost performed better.
+- XGBoost Accuracy: 1.00  
+- Regression Accuracy: 1.00  
+- Mean Squared Error: ~0  
 
 
 ## 🛠️ Tools & Technologies
@@ -33,5 +33,11 @@ This project predicts intern performance based on task completion, consistency, 
 - Pandas, NumPy
 - Scikit-learn
 - XGBoost
+
+
+### Note:
+The high accuracy is due to the use of a synthetic dataset generated using rule-based logic. 
+Since the model learns the same pattern used to create the data, it achieves near-perfect performance. 
+In real-world scenarios, the accuracy may vary.
 
 
