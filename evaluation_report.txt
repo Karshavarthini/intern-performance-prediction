@@ -1,0 +1,49 @@
+Sprint 3 – Optimization & Evaluation Report
+
+Model Used:
+XGBoost Classifier
+
+
+Feature Engineering:
+- Created new features such as:
+  • efficiency (tasks_completed / active_days)
+  • engagement_index (combined engagement, communication, discipline)
+  • performance_intensity (evaluation_score × completion_rate)
+
+
+Model Optimization:
+- Used enhanced dataset with engineered features
+- Applied XGBoost with tuned parameters:
+  • n_estimators = 100
+  • max_depth = 4
+  • learning_rate = 0.1
+
+
+Model Performance:
+
+Accuracy:
+- Achieved Accuracy: 1.00 (100%)
+
+Classification Report:
+- Precision: 1.00 for all classes
+- Recall: 1.00 for all classes
+- F1-Score: 1.00 for all classes
+
+Confusion Matrix:
+[[4 0]
+ [0 4]]
+
+Interpretation:
+- All predictions are correct
+- No misclassifications observed
+- Model performs perfectly on test data
+
+
+Insights:
+- Feature engineering significantly improved model learning
+- The model captures relationships between performance metrics effectively
+- High accuracy is due to structured and rule-based dataset
+
+
+Conclusion:
+The model has been successfully optimized using advanced feature engineering and parameter tuning. It demonstrates excellent predictive performance and is ready for deployment in the next phase (Sprint 4: Prediction System).

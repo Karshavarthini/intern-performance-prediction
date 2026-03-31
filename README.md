@@ -41,3 +41,24 @@ Since the model learns the same pattern used to create the data, it achieves nea
 In real-world scenarios, the accuracy may vary.
 
 
+## ⚙️ Sprint 3 – Optimization & Evaluation
+- Applied advanced feature engineering
+- Created new features:
+  - efficiency
+  - engagement_index
+  - performance_intensity
+- Improved model performance using optimized dataset
+- Evaluated using classification metrics
+
+### 📊 Model Performance:
+- Accuracy: 1.00  
+- Precision: 1.00  
+- Recall: 1.00  
+- F1-Score: 1.00  
+
+### 📉 Confusion Matrix:
+
+[[4 0]
+[0 4]]
+
+
