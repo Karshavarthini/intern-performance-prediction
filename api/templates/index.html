@@ -1,0 +1,190 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>InternPulse AI | Intelligence Hub</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        brand: {
+                            50: '#ecfdf5',
+                            100: '#d1fae5',
+                            500: '#10b981',
+                            600: '#059669',
+                            700: '#047857',
+                            900: '#064e3b',
+                            DEFAULT: '#10b981'
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;600;800&display=swap');
+        body { font-family: 'Plus Jakarta Sans', sans-serif; }
+        .glass { background: rgba(255, 255, 255, 0.95); backdrop-filter: blur(10px); border: 1px solid rgba(255, 255, 255, 0.5); }
+        .gradient-bg { background: linear-gradient(135deg, #10b981 0%, #064e3b 100%); }
+        .tab-active { background: #10b981; color: white; box-shadow: 0 10px 15px -3px rgba(16, 185, 129, 0.3); }
+        
+        /* Table Styling for Batch results */
+        .batch-table { width: 100%; border-collapse: separate; border-spacing: 0; }
+        .batch-table th { background: #f8fafc; padding: 10px; font-size: 0.65rem; text-transform: uppercase; color: #64748b; border-bottom: 2px solid #e2e8f0; text-align: left; }
+        .batch-table td { padding: 8px; font-size: 0.75rem; border-bottom: 1px solid #f1f5f9; }
+        
+        .custom-scroll::-webkit-scrollbar { width: 5px; }
+        .custom-scroll::-webkit-scrollbar-thumb { background: #10b981; border-radius: 10px; }
+    </style>
+</head>
+<body class="bg-slate-50 min-h-screen text-slate-800">
+
+    <header class="bg-slate-900 text-white py-6 shadow-2xl border-b-4 border-brand-500">
+        <div class="container mx-auto px-6 flex justify-between items-center">
+            <h1 class="text-3xl font-black tracking-tight">
+                <i class="fas fa-microchip text-brand-500 mr-2"></i>InternPulse <span class="text-brand-500 font-light">AI</span>
+            </h1>
+            <div class="text-[10px] font-bold tracking-widest uppercase bg-brand-900/50 text-brand-500 px-4 py-1.5 rounded-full border border-brand-500/30">
+                16-Feature Engine Online
+            </div>
+        </div>
+    </header>
+
+    <main class="container mx-auto px-4 py-10">
+        
+        <div class="flex justify-center mb-10">
+            <div class="bg-slate-200 p-1 rounded-2xl flex gap-1 shadow-inner">
+                <button onclick="switchTab('single')" id="tab-s" class="px-8 py-3 rounded-xl font-bold transition-all tab-active">Individual</button>
+                <button onclick="switchTab('batch')" id="tab-b" class="px-8 py-3 rounded-xl font-bold transition-all text-slate-500 hover:text-brand-600">Batch Analysis</button>
+            </div>
+        </div>
+
+        <div class="flex flex-wrap -mx-4">
+            
+            <div class="w-full lg:w-3/5 px-4 mb-8">
+                
+                <div id="section-single" class="glass p-8 rounded-[2rem] shadow-2xl border-t-8 border-brand-500">
+                    <h2 class="text-xl font-extrabold mb-6 flex items-center gap-2">
+                        <i class="fas fa-user-edit text-brand-500"></i> Manual Evaluation
+                    </h2>
+                    <form action="/predict" method="post" class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                        {% for label, name, def_val in [
+                            ('Attendance %','attendance',''), 
+                            ('Consistency (1-10)','consistency',''), 
+                            ('Learning (0-100)','learning',''),
+                            ('Tasks Assigned','tasks_assigned','20'),
+                            ('Tasks Done','tasks_completed',''),
+                            ('Project Score','project_score',''),
+                            ('Evaluation','evaluation',''),
+                            ('Login Freq','login_frequency',''),
+                            ('Active Days','active_days',''),
+                            ('Engagement','engagement',''),
+                            ('Communication','communication',''),
+                            ('Discipline','discipline','')
+                        ] %}
+                        <div>
+                            <label class="block text-[9px] font-black uppercase text-slate-400 mb-1 ml-1">{{ label }}</label>
+                            <input type="number" name="{{ name }}" value="{{ def_val }}" step="0.1" required class="w-full p-3 bg-slate-100 border-none rounded-xl focus:ring-2 focus:ring-brand-500 outline-none text-sm transition shadow-inner">
+                        </div>
+                        {% endfor %}
+                        <button type="submit" class="md:col-span-3 gradient-bg text-white font-black py-4 rounded-xl shadow-lg hover:brightness-110 active:scale-[0.98] transition mt-4">
+                            Run Individual Prediction
+                        </button>
+                    </form>
+                </div>
+
+                <div id="section-batch" class="glass p-8 rounded-[2rem] shadow-2xl border-t-8 border-brand-500 hidden">
+                    <h2 class="text-xl font-extrabold mb-4 flex items-center gap-2">
+                        <i class="fas fa-database text-brand-500"></i> Batch Engine
+                    </h2>
+                    <p class="text-[10px] text-slate-400 mb-6">Paste numeric rows (12 values per intern) separated by commas.</p>
+                    
+                    <form action="/predict_batch" method="post" class="space-y-4">
+                        <div class="relative">
+                            <textarea name="batch_input" rows="10" 
+                                placeholder="95,9,90,20,19,90,92,5,20,9,9,9.5"
+                                class="w-full p-6 bg-slate-900 text-brand-100 font-mono text-[11px] rounded-2xl border-none focus:ring-4 focus:ring-brand-500/20 outline-none shadow-2xl resize-none"
+                                required></textarea>
+                            <div class="absolute top-3 right-4 text-[8px] bg-brand-600 text-white px-2 py-0.5 rounded font-black">RAW CSV DATA</div>
+                        </div>
+
+                        <button type="submit" class="gradient-bg w-full text-white font-black py-4 rounded-xl shadow-lg hover:brightness-110 transition">
+                            Process Data Pipeline
+                        </button>
+                    </form>
+                </div>
+            </div>
+
+            <div class="w-full lg:w-2/5 px-4">
+                <div class="glass p-8 rounded-[2rem] shadow-2xl sticky top-6 border border-slate-100 min-h-[520px] flex flex-col">
+                    <h2 class="text-lg font-bold mb-6 flex items-center justify-between">
+                        <span>AI Prediction Hub</span>
+                        <i class="fas fa-satellite-dish text-brand-500 animate-pulse"></i>
+                    </h2>
+
+                    {% if error %}
+                    <div class="mb-4 p-4 bg-rose-50 border-l-4 border-rose-500 text-rose-700 text-[10px] font-bold rounded-r-lg">
+                        <i class="fas fa-exclamation-circle mr-1"></i> {{ error }}
+                    </div>
+                    {% endif %}
+                    
+                    {% if result %}
+                    <div class="text-center py-10 rounded-3xl border-2 mb-6
+                        {% if result == 'High' %} border-emerald-500 bg-emerald-50 text-emerald-900 
+                        {% elif result == 'Medium' %} border-amber-500 bg-amber-50 text-amber-900 
+                        {% else %} border-rose-500 bg-rose-50 text-rose-900 {% endif %}">
+                        <p class="text-[9px] font-black uppercase tracking-widest opacity-50">Result</p>
+                        <h3 class="text-5xl font-black my-2">{{ result }}</h3>
+                        <div class="text-[10px] font-bold opacity-60 flex justify-center items-center gap-1">
+                            <i class="fas fa-check-double"></i> Scaled 16-Feature Verified
+                        </div>
+                    </div>
+                    {% elif batch_results %}
+                    <div class="overflow-hidden rounded-xl border border-slate-200 custom-scroll max-h-[350px] overflow-y-auto">
+                        {{ batch_results | safe }}
+                    </div>
+                    {% else %}
+                    <div class="flex-grow flex flex-col items-center justify-center text-slate-300">
+                        <i class="fas fa-robot text-6xl mb-4 opacity-10"></i>
+                        <p class="text-[10px] font-black uppercase tracking-tighter opacity-40">System Ready for Input</p>
+                    </div>
+                    {% endif %}
+
+                    <div class="mt-auto pt-6 border-t border-slate-100">
+                        <div class="bg-slate-900 p-4 rounded-xl font-mono text-[9px] text-slate-500">
+                            <div><span class="text-brand-500">></span> MODE: Feature_Engineering_v3</div>
+                            <div><span class="text-brand-500">></span> LOAD: 16_DIMS_SUCCESSFUL</div>
+                            <div><span class="text-brand-500">></span> AUTH: Royal_Emerald_Secure</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <script>
+        function switchTab(mode) {
+            const single = document.getElementById('section-single');
+            const batch = document.getElementById('section-batch');
+            const tabS = document.getElementById('tab-s');
+            const tabB = document.getElementById('tab-b');
+
+            if(mode === 'single') {
+                single.classList.remove('hidden');
+                batch.classList.add('hidden');
+                tabS.className = "px-8 py-3 rounded-xl font-bold transition-all tab-active";
+                tabB.className = "px-8 py-3 rounded-xl font-bold transition-all text-slate-500 hover:text-brand-600";
+            } else {
+                batch.classList.remove('hidden');
+                single.classList.add('hidden');
+                tabB.className = "px-8 py-3 rounded-xl font-bold transition-all tab-active";
+                tabS.className = "px-8 py-3 rounded-xl font-bold transition-all text-slate-500 hover:text-brand-600";
+            }
+        }
+    </script>
+</body>
+</html>
