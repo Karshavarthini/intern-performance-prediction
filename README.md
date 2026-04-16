@@ -101,3 +101,6 @@ The system successfully integrates:
 - Interactive User Interface  
 
 This project demonstrates an end-to-end AI solution from data processing to deployment.
+
+## 🌐 Live Demo
+👉 https://karshavarthini-intern-performance-prediction.hf.space
